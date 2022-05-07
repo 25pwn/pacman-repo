@@ -1,0 +1,45 @@
+# Maintainer: 25pwn <32491885+25pwn@users.noreply.github.com>
+pkgname=opentabletdriver
+pkgver=0.6.0.4
+pkgrel=1
+arch=('x86_64')
+
+pkgdesc="A cross-platform open source tablet driver"
+
+url="https://github.com/OpenTabletDriver/OpenTabletDriver"
+license=('LGPL3')
+depends=('dotnet-runtime>=6.0.4' 'dotnet-host>=6.0.4' 'gtk3' 'libevdev')
+optdepends=('libxrandr: x11 display querying support' 'libx11')
+makedepends=()
+
+source=("https://github.com/OpenTabletDriver/OpenTabletDriver/releases/download/v${pkgver}/OpenTabletDriver.deb")
+
+package() {
+    # extract deb data into pkg
+    bsdtar -xf data.tar.xz -C "${pkgdir}/"
+
+    # convert deb control to pkg .install
+    bsdtar -xf control.tar.xz -C "${srcdir}/"
+    printf '%s\n' '#!/bin/sh' > "${srcdir}/install"
+    control_to_install()
+    {
+        control_arg=$1
+        pkg_arg=$2
+
+        if [[ -e "${srcdir}/${control_arg}" ]]; then
+        printf '%s' "${pkg_arg}" >> "${srcdir}/install"
+        printf '%s\n' '() {' >> "${srcdir}/install"
+        cat "${srcdir}/${control_arg}" >> "${srcdir}/install"
+        printf '%s\n' '}' >> "${srcdir}/install"
+        fi
+    }
+    control_to_install postinst post_install
+    control_to_install postrm post_remove
+    control_to_install preinst pre_install
+    control_to_install prerm pre_remove
+
+    # install="${srcdir}/install"
+}
+# install="install"
+sha256sums=('2aaf940dad78e5d0cf54afca28d6e3e895fb280c8ec6527c02c14a32d38ccbb3')
+
