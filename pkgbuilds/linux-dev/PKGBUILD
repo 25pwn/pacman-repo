@@ -27,7 +27,7 @@ validpgpkeys=(
   'C7E7849466FE2358343588377258734B41C31549'  # David Runge <dvzrv@archlinux.org>
 )
 sha256sums=('SKIP'
-            '0b9aedb1739d2806161dbcdc33fd7e9d0e35d4f2ed05e72a2ace669eca670693')
+            '382aa201a6a6939210dd8668ab052724547b4bd489b38e97502bbd0848061b35')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -69,8 +69,6 @@ prepare() {
 build() {
   # cd $_srcname
 
-  build_dir="${srcdir}/build"
-  source_dir="${srcdir}/${_srcname}"
   cd ${build_dir}
 
   start_time=$(date)
@@ -94,8 +92,6 @@ _package() {
 
   # cd $_srcname
 
-  build_dir="${srcdir}/build"
-  source_dir="${srcdir}/${_srcname}"
   cd ${build_dir}
 
   local kernver="$(<"${build_dir}/version")"
@@ -123,9 +119,6 @@ _package-headers() {
 
   # cd $_srcname
 
-  build_dir="${srcdir}/build"
-  source_dir="${srcdir}/${_srcname}"
-
   local builddir="$pkgdir/usr/lib/modules/$(<"${build_dir}/version")/build"
 
   echo "Installing build files..."
@@ -133,8 +126,8 @@ _package-headers() {
 
   install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
     localversion.* version vmlinux
-  install -Dt "$builddir/kernel" -m644 kernel/Makefile
-  install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
+  install -Dt "$builddir/kernel" -m644 "${source_dir}/kernel/Makefile"
+  install -Dt "$builddir/arch/x86" -m644 "${source_dir}/arch/x86/Makefile"
   cp -t "$builddir" -a scripts
 
   # required when STACK_VALIDATION is enabled
@@ -209,9 +202,6 @@ _package-headers() {
 
 _package-docs() {
   pkgdesc="Documentation for the $pkgdesc kernel"
-
-  build_dir="${srcdir}/build"
-  source_dir="${srcdir}/${_srcname}"
 
   cd $_srcname
   local builddir="$pkgdir/usr/lib/modules/$(<"${build_dir}/version")/build"
