@@ -27,7 +27,7 @@ validpgpkeys=(
   'C7E7849466FE2358343588377258734B41C31549'  # David Runge <dvzrv@archlinux.org>
 )
 sha256sums=('SKIP'
-            '382aa201a6a6939210dd8668ab052724547b4bd489b38e97502bbd0848061b35')
+            '0b9aedb1739d2806161dbcdc33fd7e9d0e35d4f2ed05e72a2ace669eca670693')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -92,6 +92,8 @@ _package() {
 
   # cd $_srcname
 
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
   cd ${build_dir}
 
   local kernver="$(<"${build_dir}/version")"
@@ -119,6 +121,9 @@ _package-headers() {
 
   # cd $_srcname
 
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
+
   local builddir="$pkgdir/usr/lib/modules/$(<"${build_dir}/version")/build"
 
   echo "Installing build files..."
@@ -141,7 +146,7 @@ _package-headers() {
 
   cp -t "$builddir" -a include
   cp -t "$builddir/arch/x86" -a arch/x86/include
-  install -Dt "$builddir/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
+  install -Dt "$builddir/arch/x86/kernel" -m644 "${build_dir}/arch/x86/kernel/asm-offsets.s"
 
   install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
   install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
@@ -202,6 +207,9 @@ _package-headers() {
 
 _package-docs() {
   pkgdesc="Documentation for the $pkgdesc kernel"
+
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
 
   cd $_srcname
   local builddir="$pkgdir/usr/lib/modules/$(<"${build_dir}/version")/build"
