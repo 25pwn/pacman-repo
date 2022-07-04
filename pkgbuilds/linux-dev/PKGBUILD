@@ -37,7 +37,7 @@ prepare() {
   # cd $_srcname
 
   build_dir="${srcdir}/build"
-  source_dir="${srcdir}/linux"
+  source_dir="${srcdir}/${_srcname}"
   mkdir -p ${build_dir}
   cd ${build_dir}
 
@@ -55,18 +55,24 @@ prepare() {
   #   patch -Np1 < "../$src"
   # done
 
-  echo "Setting config..."
-  cp ${srcdir}/../config ${build_dir}/.config
-  make -f ${source_dir}/Makefile olddefconfig
-  diff -u ${srcdir}/../config ${build_dir}/.config || :
+  if [ ! -a "${build_dir}/.config" ]; then
+    echo "Setting config..."
+    cp ${srcdir}/../config ${build_dir}/.config
+    make -f ${source_dir}/Makefile olddefconfig
+    diff -u ${srcdir}/../config ${build_dir}/.config || :
+  fi
 
-  make -f ${source_dir}/Makefile -s kernelrelease > version
-  echo "Prepared $pkgbase version $(<version)"
+  make -f ${source_dir}/Makefile -s kernelrelease > "${build_dir}/version"
+  echo "Prepared $pkgbase version $(<"${build_dir}/version")"
 }
 
 build() {
   # cd $_srcname
+
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
   cd ${build_dir}
+
   start_time=$(date)
   # make htmldocs all
   make -f ${source_dir}/Makefile all LLVM=1 -j 12
@@ -87,8 +93,12 @@ _package() {
   replaces=(virtualbox-guest-modules-arch wireguard-arch)
 
   # cd $_srcname
+
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
   cd ${build_dir}
-  local kernver="$(<version)"
+
+  local kernver="$(<"${build_dir}/version")"
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
 
   echo "Installing boot image..."
@@ -111,10 +121,16 @@ _package-headers() {
   pkgdesc="Headers and scripts for building modules for the $pkgdesc kernel"
   depends=(pahole)
 
-  cd $_srcname
-  local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
+  # cd $_srcname
+
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
+
+  local builddir="$pkgdir/usr/lib/modules/$(<"${build_dir}/version")/build"
 
   echo "Installing build files..."
+  cd ${build_dir}
+
   install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
     localversion.* version vmlinux
   install -Dt "$builddir/kernel" -m644 kernel/Makefile
@@ -128,6 +144,8 @@ _package-headers() {
   install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
 
   echo "Installing headers..."
+  cd ${source_dir}
+
   cp -t "$builddir" -a include
   cp -t "$builddir/arch/x86" -a arch/x86/include
   install -Dt "$builddir/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
@@ -192,8 +210,11 @@ _package-headers() {
 _package-docs() {
   pkgdesc="Documentation for the $pkgdesc kernel"
 
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
+
   cd $_srcname
-  local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
+  local builddir="$pkgdir/usr/lib/modules/$(<"${build_dir}/version")/build"
 
   echo "Installing documentation..."
   local src dst
