@@ -1,6 +1,6 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
-pkgbase=linux-dev
+pkgbase=linux-dev-llvm
 pkgver=5.18.9.arch1
 pkgrel=1
 pkgdesc='Linux'
@@ -13,7 +13,7 @@ makedepends=(
   xmlto python-sphinx python-sphinx_rtd_theme graphviz imagemagick texlive-latexextra
   git
   clang llvm lld llvm-libs lldb
-  )
+)
 options=('!strip')
 _srcname=linux
 source=(
@@ -227,7 +227,7 @@ _package-docs() {
   ln -sr "$builddir/Documentation" "$pkgdir/usr/share/doc/$pkgbase"
 }
 
-pkgname=("$pkgbase" "$pkgbase-headers")
+pkgname=("$pkgbase" "$pkgbase-headers") # "$pkgbase-docs"
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
