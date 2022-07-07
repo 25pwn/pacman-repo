@@ -22,7 +22,7 @@ optdepends=('pulseaudio: audio support'
 _url="https://download-installer.cdn.mozilla.net/pub/${_name}/nightly/latest-mozilla-central"
 _src="${_name}-${_version}.${_lang}.linux"
 _filename="$(date -u +%Y%m%d)-${_src}"
-source=("${pkgname}.desktop" 'policies.json' "${_name}-${_channel}::https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US")
+source=("${pkgname}.desktop" 'policies.json' "${_name}-${_channel}::https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os=linux64&lang=en-US")
 
 package() {
   OPT_PATH="opt/${pkgname}"
@@ -53,4 +53,4 @@ package() {
 }
 sha256sums=('7660ade771b998d00047ff58a8b2edc6ad1afe07527fa4360b59197f0dec5f42'
             'e977c3d690224dd727d8761d2c0a66ba41bfd02ae0fd7850c4545d06b5a8e63c'
-            '2673d387d22ae6e21c20f091dc4811197aaa516110d44133e4d14c91d5568f87')
+            'c0bdac2328678e36a4c48ec9c5e76fd5026d1089c9410e297653457349da97ef')
