@@ -1,5 +1,5 @@
 # Maintainer: 25pwn <32491885+25pwn@users.noreply.github.com>
-pkgname=opentabletdriver
+pkgname=opentabletdriver-bin
 pkgver=0.6.0.4
 pkgrel=1
 arch=('x86_64')
@@ -13,6 +13,10 @@ optdepends=('libxrandr: x11 display querying support' 'libx11')
 makedepends=()
 
 source=("https://github.com/OpenTabletDriver/OpenTabletDriver/releases/download/v${pkgver}/OpenTabletDriver.deb")
+provides=("opentabletdriver")
+conflicts=("opentabletdriver")
+replaces=("opentabletdriver")
+
 
 package() {
     # extract deb data into pkg
