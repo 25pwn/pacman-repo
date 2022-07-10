@@ -1,7 +1,7 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
 pkgbase=linux-dev-llvm
-pkgver=5.18.9.arch1
+pkgver=5.18.10.arch1
 pkgrel=1
 pkgdesc='Linux'
 _srctag=v${pkgver%.*}-${pkgver##*.}
@@ -27,7 +27,7 @@ validpgpkeys=(
   'C7E7849466FE2358343588377258734B41C31549'  # David Runge <dvzrv@archlinux.org>
 )
 sha256sums=('SKIP'
-            '0b9aedb1739d2806161dbcdc33fd7e9d0e35d4f2ed05e72a2ace669eca670693')
+            'SKIP')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -38,6 +38,7 @@ prepare() {
 
   build_dir="${srcdir}/build"
   source_dir="${srcdir}/${_srcname}"
+
   mkdir -p ${build_dir}
   cd ${build_dir}
 
@@ -69,11 +70,14 @@ prepare() {
 build() {
   # cd $_srcname
 
+  build_dir="${srcdir}/build"
+  source_dir="${srcdir}/${_srcname}"
+
   cd ${build_dir}
 
   start_time=$(date)
   # make htmldocs all
-  make -f ${source_dir}/Makefile all LLVM=1 -j 12
+  make -f ${source_dir}/Makefile all LLVM=1 -j 16
   end_time=$(date)
 
 
