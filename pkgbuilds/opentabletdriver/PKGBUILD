@@ -13,6 +13,8 @@ optdepends=('libxrandr: x11 display querying support' 'libx11')
 makedepends=()
 
 source=("https://github.com/OpenTabletDriver/OpenTabletDriver/releases/download/v${pkgver}/OpenTabletDriver.deb")
+sha256sums=('2aaf940dad78e5d0cf54afca28d6e3e895fb280c8ec6527c02c14a32d38ccbb3')
+
 provides=("opentabletdriver")
 conflicts=("opentabletdriver")
 replaces=("opentabletdriver")
@@ -45,5 +47,4 @@ package() {
     # install="${srcdir}/install"
 }
 # install="install"
-sha256sums=('2aaf940dad78e5d0cf54afca28d6e3e895fb280c8ec6527c02c14a32d38ccbb3')
 
