@@ -22,13 +22,20 @@ optdepends=('pulseaudio: audio support'
 _url="https://download-installer.cdn.mozilla.net/pub/${_name}/nightly/latest-mozilla-central"
 _src="${_name}-${_version}.${_lang}.linux"
 _filename="$(date -u +%Y%m%d)-${_src}"
-source=("${_name}-${_channel}.desktop" 'policies.json' "${_name}-${_channel}::https://download.mozilla.org/?product=firefox-${_channel}-latest-ssl&os=linux64&lang=en-US")\
+source=("${_name}-${_channel}.desktop" 'policies.json' "${_name}-${_channel}::https://download.mozilla.org/?product=firefox-${_channel}-latest-ssl&os=linux64&lang=en-US")
 sha256sums=('7660ade771b998d00047ff58a8b2edc6ad1afe07527fa4360b59197f0dec5f42'
             'e977c3d690224dd727d8761d2c0a66ba41bfd02ae0fd7850c4545d06b5a8e63c'
             'SKIP')
 provides=("${_name}-${_channel}")
 conflicts=("${_name}-${_channel}")
 replaces=("firefox-nightly")
+
+prepare() {
+  echo $(cat ${_name}/application.ini | grep -m 1 "Version=")
+  declare $(cat ${_name}/application.ini | grep -m 1 "Version=")
+  echo ${Version}
+  pkgver=${Version}
+}
 
 package() {
   OPT_PATH="opt/${_name}-${_channel}"
